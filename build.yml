@@ -1,0 +1,56 @@
+name: Build and Conditional Release (.NET Framework 4.8)
+
+on:
+  push:
+    branches:
+      - '**'   # Build on push to any branch
+    tags:
+      - 'v*'   # Also triggers on version tags
+
+jobs:
+  build:
+    runs-on: windows-latest
+    name: Build WinForms App
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Restore NuGet packages
+      run: nuget restore RisetGithubActionOnWindowsForm.sln
+
+    - name: Build solution
+      run: msbuild RisetGithubActionOnWindowsForm.sln /p:Configuration=Release
+
+    - name: Zip build output
+      run: Compress-Archive -Path .\RisetGithubActionOnWindowsForm\bin\Release\* -DestinationPath WinFormsApp.zip
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WinFormsApp
+        path: WinFormsApp.zip
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    name: Create GitHub Release
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: WinFormsApp
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        files: WinFormsApp.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
