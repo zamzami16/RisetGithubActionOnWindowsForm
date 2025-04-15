@@ -1,0 +1,35 @@
+name: Build WinForms App (.NET Framework 4.8)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Restore NuGet packages
+      run: nuget restore YourSolution.sln
+
+    - name: Build solution
+      run: msbuild YourSolution.sln /p:Configuration=Release
+
+    # Optional: Upload artifact (e.g. .exe or setup)
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WinFormsApp
+        path: |
+          **\bin\Release\
