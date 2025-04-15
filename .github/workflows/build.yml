@@ -25,8 +25,10 @@ jobs:
     - name: Build solution
       run: msbuild RisetGithubActionOnWindowsForm.sln /p:Configuration=Release
 
-    - name: Zip build output
-      run: Compress-Archive -Path .\RisetGithubActionOnWindowsForm\bin\Release\* -DestinationPath WinFormsApp.zip
+    - name: Zip all Release outputs
+      run: |
+        Compress-Archive -Path (Get-ChildItem -Path . -Recurse -Include *.exe,*.dll | ForEach-Object { $_.FullName }) -DestinationPath WinFormsApp.zip
+      shell: pwsh
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
