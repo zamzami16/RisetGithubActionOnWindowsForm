@@ -21,10 +21,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
 
     - name: Restore NuGet packages
-      run: nuget restore YourSolution.sln
+      run: nuget restore RisetGithubActionOnWindowsForm.sln
 
     - name: Build solution
-      run: msbuild YourSolution.sln /p:Configuration=Release
+      run: msbuild RisetGithubActionOnWindowsForm.sln /p:Configuration=Release
 
     # Optional: Upload artifact (e.g. .exe or setup)
     - name: Upload Build Artifact
