@@ -19,12 +19,16 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x' # or your test project's version
+        dotnet-version: '6.0.x'  # Sesuaikan dengan target test kamu
 
-    - name: Restore and Run Tests
-      run: |
-        dotnet restore DbServiceTests/DbServiceTests.csproj
-        dotnet test DbServiceTests/DbServiceTests.csproj --configuration Release --no-build --verbosity normal
+    - name: Restore NuGet packages
+      run: dotnet restore DbServiceTests/DbServiceTests.csproj
+
+    - name: Build test project
+      run: dotnet build DbServiceTests/DbServiceTests.csproj --configuration Release
+
+    - name: Run tests
+      run: dotnet test DbServiceTests/DbServiceTests.csproj --no-build --configuration Release --verbosity normal
 
   build:
     runs-on: windows-latest
