@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ public sealed class DbService() : IDbService
                 dt.LoadDataRow(values, true);
             }
         }
-        catch { }
+        catch (Exception) { }
         finally { dt.EndLoadData(); }
 
         return dt;
